@@ -40,5 +40,6 @@ Para manter a organização do código:
 * `/src/main/java/com/projeto/view`: Interfaces de interação.
 
 ---
+*Site em desenvolvimento: https://fontedopipa.squareweb.app/*
 *Projeto desenvolvido por Lucas Henrique da Silva Menezes.*
 *Disciplina: Análise e Projetos de Sistemas | Professor: Dr. Dorgival Pereira da Silva Netto.*
