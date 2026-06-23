@@ -36,7 +36,7 @@ Para manter a organização do código:
 * `/src/main/java/com/projeto/model`: Entidades (POJOs) e Lógica de Negócio.
 * `/src/main/java/com/projeto/controller`: Orquestração dos fluxos e validação de regras.
 * `/src/main/java/com/projeto/view`: Interfaces de interação.
-
+*Site em desenvolvimento: https://fontedopipa.squareweb.app/*
 ---
 *Projeto desenvolvido por Lucas Henrique da Silva Menezes.*
 *Disciplina: Análise e Projetos de Sistemas | Professor: Dr. Dorgival Pereira da Silva Netto.*
