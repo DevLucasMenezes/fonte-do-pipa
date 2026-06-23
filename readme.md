@@ -17,7 +17,8 @@ Este sistema foi desenvolvido como parte da disciplina de **Análise e Projetos 
 ## 🏛 Estrutura do Domínio (Model)
 O sistema é regido pelo seguinte modelo de classes:
 
-![Diagrama de Classes](documents/digrama.png)
+<img width="2246" height="951" alt="Diagrama fonte-do-pipa" src="https://github.com/user-attachments/assets/5b277308-9d5b-4168-9c98-192bbabe1b40" />
+
 
 * **`Casa`**: Gerencia o ciclo de vida da ligação e o status da rede.
 * **`Fatura`**: Responsável pela lógica de recorrência e status financeiro.
