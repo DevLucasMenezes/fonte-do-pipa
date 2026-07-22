@@ -7,38 +7,54 @@ public class Casa {
     private int id;
     private String nomeResponsavel;
     private String endereco;
+    private String celular;
+    private int diaVencimento; // 👈 Novo campo
     private StatusRede statusRede;
 
-    // AQUI ENTRA O OBSERVER: Uma lista para guardar quem quer vigiar as mudanças de status da casa
     private final List<CasaObserver> observadores = new ArrayList<>();
 
-    public Casa(int id, String nomeResponsavel, String endereco, StatusRede statusRede) {
+    // Construtor completo
+    public Casa(int id, String nomeResponsavel, String endereco, String celular, int diaVencimento, StatusRede statusRede) {
         this.id = id;
         this.nomeResponsavel = nomeResponsavel;
         this.endereco = endereco;
+        this.celular = celular;
+        this.diaVencimento = diaVencimento;
         this.statusRede = statusRede;
     }
 
-    // Método para registrar um novo interessado em observar a casa
+    // Construtor auxiliar sem diaVencimento (mantém compatibilidade com NullCasa)
+    public Casa(int id, String nomeResponsavel, String endereco, String celular, StatusRede statusRede) {
+        this(id, nomeResponsavel, endereco, celular, 10, statusRede); // Valor padrão: dia 10
+    }
+
+    // Construtor antigo
+    public Casa(int id, String nomeResponsavel, String endereco, StatusRede statusRede) {
+        this(id, nomeResponsavel, endereco, "Não informado", 10, statusRede);
+    }
+
     public void adicionarObservador(CasaObserver observador) {
         this.observadores.add(observador);
     }
 
-    // Atualizamos o método de alteração de status para avisar todo mundo na lista!
     public void alterarStatusRede(StatusRede novoStatus) {
         StatusRede antigo = this.statusRede;
         this.statusRede = novoStatus;
 
         System.out.println("Status da rede da casa ID " + this.id + " alterado para: " + novoStatus);
 
-        // Dispara o alarme para todos os observadores cadastrados
         for (CasaObserver obs : observadores) {
             obs.onStatusChanged(this, antigo, novoStatus);
         }
     }
 
     public String obterDadosContrato() {
-        return "Contrato ID: " + id + " | Responsável: " + nomeResponsavel + " | Endereço: " + endereco + " | Status: " + statusRede;
+        return "Contrato ID: " + id +
+                " | Responsável: " + nomeResponsavel +
+                " | Celular: " + celular +
+                " | Endereço: " + endereco +
+                " | Dia de Vencimento: " + diaVencimento +
+                " | Status: " + statusRede;
     }
 
     public boolean isNull() {
@@ -52,6 +68,15 @@ public class Casa {
     public void setNomeResponsavel(String nomeResponsavel) { this.nomeResponsavel = nomeResponsavel; }
     public String getEndereco() { return endereco; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
+    public String getCelular() { return celular; }
+    public void setCelular(String celular) { this.celular = celular; }
+    public int getDiaVencimento() { return diaVencimento; }
+    public void setDiaVencimento(int diaVencimento) { this.diaVencimento = diaVencimento; }
     public StatusRede getStatusRede() { return statusRede; }
     public void setStatusRede(StatusRede statusRede) { this.statusRede = statusRede; }
+
+    @Override
+    public String toString() {
+        return obterDadosContrato();
+    }
 }

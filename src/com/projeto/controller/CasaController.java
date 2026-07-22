@@ -16,33 +16,56 @@ public class CasaController {
     private final List<Mensalidade> mensalidades = new ArrayList<>();
     private final FaturaFactory faturaFactory = new FaturaResidencialFactory();
     private int proximoIdMensalidade = 1;
+    private int proximoIdCasa = 1;
+
+    public CasaController() {
+        this.casaRepository = new CasaRepository();
+    }
 
     public CasaController(CasaRepository casaRepository) {
         this.casaRepository = casaRepository;
     }
 
-    public void cadastrarCasa(int id, String nome, String endereco) {
-        Casa novaCasa = new Casa(id, nome, endereco, StatusRede.ATIVA);
-        casaRepository.salvar(novaCasa);
-
-        // Assim que cadastrar uma casa nova, já roda o faturamento automático para ela ganhar a fatura do mês atual!
-        processarFaturamentoAutomatico(YearMonth.now(), 50.0);
+    // Método chamado pela View
+    public void cadastrarCasa(String nomeResponsavel, String endereco, String celular, int diaVencimento) {
+        cadastrarCasa(proximoIdCasa++, nomeResponsavel, endereco, celular, diaVencimento);
     }
 
-    /**
-     * MOTOR AUTOMÁTICO: Este método varre todas as casas e gera as faturas atrasadas/atuais
-     * com base no mês informado (YearMonth) e em um valor base padrão de tarifa.
-     */
+    public void cadastrarCasa(int id, String nome, String endereco, String celular, int diaVencimento) {
+        Casa novaCasa = new Casa(id, nome, endereco, celular, diaVencimento, StatusRede.ATIVA);
+        casaRepository.salvar(novaCasa);
+
+        processarFaturamentoAutomatico(YearMonth.now(), 50.0);
+
+        if (id >= proximoIdCasa) {
+            proximoIdCasa = id + 1;
+        }
+
+        System.out.println("✅ Casa cadastrada com sucesso para " + nome + " (Vencimento dia " + diaVencimento + ")!");
+    }
+
+    public void listarCasas() {
+        List<Casa> todasCasas = casaRepository.listarTodas();
+
+        System.out.println("\n--- 🏠 LISTA DE CASAS CADASTRADAS ---");
+        if (todasCasas.isEmpty()) {
+            System.out.println("Nenhuma casa cadastrada no momento.");
+        } else {
+            for (Casa casa : todasCasas) {
+                System.out.println(casa.obterDadosContrato());
+            }
+        }
+        System.out.println("------------------------------------\n");
+    }
+
     public void processarFaturamentoAutomatico(YearMonth mesAlvo, double valorBase) {
         List<Casa> todasCasas = casaRepository.listarTodas();
 
         for (Casa casa : todasCasas) {
-            // Se a casa estiver suspensa ou em manutenção, não gera cobrança automática
             if (casa.getStatusRede() != StatusRede.ATIVA) {
                 continue;
             }
 
-            // Verifica se essa casa já possui uma mensalidade para este mês específico
             boolean jaTemFatura = false;
             for (Mensalidade m : mensalidades) {
                 if (m.getCasa().getId() == casa.getId() && m.getMesReferencia().equals(mesAlvo)) {
@@ -51,7 +74,6 @@ public class CasaController {
                 }
             }
 
-            // Se a casa NÃO possui fatura para o mês, a fábrica gera uma automaticamente!
             if (!jaTemFatura) {
                 Mensalidade novaFatura = faturaFactory.criarMensalidade(proximoIdMensalidade++, casa, mesAlvo, valorBase);
                 mensalidades.add(novaFatura);
@@ -80,7 +102,6 @@ public class CasaController {
         casa.alterarStatusRede(novoStatus);
     }
 
-    // Ação 5: Listar todas as faturas do sistema no console
     public void listarTodasFaturas() {
         System.out.println("\n--- RELATÓRIO GERAL DE MENSALIDADES ---");
 
